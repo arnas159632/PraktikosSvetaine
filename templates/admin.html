@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+        }
+        .search-form {
+            margin-right: 20px;
+        }
+        .search-form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .search-form input, .search-form select {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 200px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .replace-form {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('document.select_documents') }}">Select Documents for Processing</a>
+    <h1>Admin Dashboard</h1>
+    <div class="container">
+        <div class="search-form">
+            <h2>Search Documents</h2>
+            <form action="/admin" method="GET">
+                <label for="faculty">Faculty:</label>
+                <select id="faculty" name="faculty">
+                    <option value="">All</option>
+                    <option value="Apskaitos">Apskaitos</option>
+                    <option value="Bankininkystės">Bankininkystės</option>
+                    <option value="Draudimo">Draudimo</option>
+                    <option value="Finansų">Finansų</option>
+                    <option value="Ekonomikos">Ekonomikos</option>
+                </select>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter name">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        <div class="document-list">
+            <h2>List of Documents</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Faculty</th>
+                        <th>Actions</th>
+                        <th>Replace</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doc in documents %}
+                    <tr>
+                        <td>{{ doc[0] }}</td>
+                        <td>{{ doc[1] }}</td>
+                        <td>{{ doc[2] }}</td>
+                        <td>{{ doc[3] }}</td>
+                        <td>
+                            <a href="{{ url_for('document.download_file', doc_id=doc[0]) }}">Download</a>
+                        </td>
+                        <td>
+                            <form action="{{ url_for('document.replace_file', doc_id=doc[0]) }}" method="POST" enctype="multipart/form-data">
+                                <input type="file" name="file" accept=".docx" required>
+                                <button type="submit">Replace</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
